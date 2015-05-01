@@ -26,11 +26,3 @@
 *.exe
 *.out
 *.app
-
-variants/*
-!variants/Enbrain_CC3200
-cores/*
-!cores/Enbrain_CC3200
-libraries/*
-!libraries/WiFi
-
