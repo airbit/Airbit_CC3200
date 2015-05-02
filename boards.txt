@@ -9,11 +9,11 @@ lpcc3200.ldscript=cc3200.ld
 #lpcc3200.upload.maximum_ram_size=32768
 
 ##############################################################
-ebcc3200.name=LaunchPad w/ cc3200 (80MHz)
-ebcc3200.upload.maximum_size=262144
-ebcc3200.build.mcu=cortex-m4
-ebcc3200.build.f_cpu=80000000L
-ebcc3200.build.core=Enbrain_CC3200
-ebcc3200.build.variant=Enbrain_CC3200
-ebcc3200.ldscript=cc3200.ld
-#ebcc3200.upload.maximum_ram_size=32768
+witii_cc3200.name=Witii CC3200 (80MHz)
+witii_cc3200.upload.maximum_size=262144
+witii_cc3200.build.mcu=cortex-m4
+witii_cc3200.build.f_cpu=80000000L
+witii_cc3200.build.core=witii_cc3200
+witii_cc3200.build.variant=witii_cc3200
+witii_cc3200.ldscript=cc3200.ld
+#witii_cc3200.upload.maximum_ram_size=32768

@@ -28,9 +28,9 @@
 *.app
 
 variants/*
-!variants/Enbrain_CC3200
+!variants/witii_cc3200
 cores/*
-!cores/Enbrain_CC3200
+!cores/witii_cc3200
 libraries/*
 !libraries/WiFi
 
