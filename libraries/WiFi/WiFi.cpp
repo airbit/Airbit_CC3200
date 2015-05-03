@@ -981,7 +981,7 @@ int WiFiClass::hostByName(char* aHostname, IPAddress& aResult)
 
 }
 
-int WiFiClass::startSmartConfig()
+int WiFiClass::startSmartConfig(bool async)
 {
     unsigned char policyVal;
     if (!_initialized) {
@@ -1005,15 +1005,21 @@ int WiFiClass::startSmartConfig()
         NULL,                     //group1Key
         NULL);                    //group2Key
 
-    /* Block until connected */
-    while(WiFi.status() != WL_CONNECTED) {
-        _SlNonOsMainLoopTask();
-    }
+    if (async) return 0;
 
+    /* Block until connected */
+    while(WiFi.status() != WL_CONNECTED);
+
+    finishSmartConfig();
+}
+
+int WiFiClass::finishSmartConfig()
+{
+    unsigned char policyVal;
     if(sl_WlanPolicySet(SL_POLICY_CONNECTION,
-        SL_CONNECTION_POLICY(1,0,0,0,0),
-        &policyVal,
-        1 /*PolicyValLen*/) < 0) return -1;
+                        SL_CONNECTION_POLICY(1,0,0,0,0),
+                        &policyVal,
+                        1 /*PolicyValLen*/) < 0) return -1;
 }
 
 /* This function takes uint16_t arguments for compactness on MSP430 w/ CC3100, but actual SlDateTime_t members are uint32_t.
@@ -1186,19 +1192,13 @@ void WiFiClass::clearCredentials() {
         this->init();
     }
 
-
     // Delete all profiles$
     sl_WlanProfileDel(0xff);
-
-    // disconnect from anything if for some reason it's connected
-    sl_WlanDisconnect();
 }
 
 int WiFiClass::off() {
     _initialized = false;
     return sl_Stop(30);
 }
-
-
 
 WiFiClass WiFi;

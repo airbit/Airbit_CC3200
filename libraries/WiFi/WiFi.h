@@ -322,7 +322,9 @@ public:
      * Start Smartconfig.
      * return: 1 if SmartConfig was successfully configured, otherwise -1.
      */
-    int startSmartConfig();
+    int startSmartConfig(bool async = false);
+
+    int finishSmartConfig();
 
     /*
      * Set WiFi network processor Date/Time
