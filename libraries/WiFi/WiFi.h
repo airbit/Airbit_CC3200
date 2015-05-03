@@ -338,6 +338,8 @@ public:
      */
     void setIpDefaults();
 
+    int off();
+
     bool hasCredentials();
     void clearCredentials();
 

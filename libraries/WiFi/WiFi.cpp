@@ -1194,6 +1194,11 @@ void WiFiClass::clearCredentials() {
     sl_WlanDisconnect();
 }
 
+int WiFiClass::off() {
+    _initialized = false;
+    return sl_Stop(30);
+}
+
 
 
 WiFiClass WiFi;
