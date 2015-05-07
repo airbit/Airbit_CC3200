@@ -11,6 +11,10 @@
 extern "C" {
 #endif
 
+#ifndef UINT32_MAX
+#define UINT32_MAX  (0xffffffff)
+#endif
+
 class IntervalTimer {
 private:
     typedef void (*ISR)(void *params);

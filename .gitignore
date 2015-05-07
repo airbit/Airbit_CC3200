@@ -27,10 +27,13 @@
 *.out
 *.app
 
+.idea
+
 variants/*
 !variants/witii_cc3200
 cores/*
 !cores/witii_cc3200
 libraries/*
 !libraries/WiFi
+
 
