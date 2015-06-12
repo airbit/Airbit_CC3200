@@ -147,14 +147,14 @@ bool WiFiClass::init()
     //
     //disconnect from anything if for some reason it's connected
     //
-    //sl_WlanDisconnect();
+    sl_WlanDisconnect();
 
 
     // Set wlan region for smart config can scan 12 and 13 channel in china
-    sl_WlanSet(SL_WLAN_CFG_GENERAL_PARAM_ID, WLAN_GENERAL_PARAM_OPT_COUNTRY_CODE, 2, (unsigned char*) COUNTRY);
+//    sl_WlanSet(SL_WLAN_CFG_GENERAL_PARAM_ID, WLAN_GENERAL_PARAM_OPT_COUNTRY_CODE, 2, (unsigned char*) COUNTRY);
 
     // disable auto connect
-    sl_WlanPolicySet(SL_POLICY_CONNECTION , SL_CONNECTION_POLICY(0,0,0,0,0), 0, 0);
+    sl_WlanPolicySet(SL_POLICY_CONNECTION , SL_CONNECTION_POLICY(0,0,0,0,0), NULL, 0);
 
     sl_NetAppMDNSUnRegisterService(0, 0);
 

@@ -42,16 +42,30 @@
 #include "driverlib/adc.h"
 #include "driverlib/pin.h"
 
-static const uint8_t RED_LED = 29;
-static const uint8_t GREEN_LED = 10;
-static const uint8_t YELLOW_LED = 9;
-static const uint8_t PUSH1 = 3;
-static const uint8_t PUSH2 = 11;
+#define LED_BUILTIN     13
+#define RED_LED         14
+#define GREEN_LED       16
+#define BLUE_LED        15
 
-static const uint8_t A0 = 23;
-static const uint8_t A1 = 2;
-static const uint8_t A2 = 6;
-static const uint8_t A3 = 24;
+#define RGB_BUILTIN_R   RED_LED
+#define RGB_BUILTIN_G   GREEN_LED
+#define RGB_BUILTIN_B   BLUE_LED
+
+//static const uint8_t PUSH1 = 20;
+#define PUSH2           24
+
+static const uint8_t SDA = 17;
+static const uint8_t SCL = 18;
+
+static const uint8_t SS   = 10;
+static const uint8_t MOSI = 11;
+static const uint8_t MISO = 12;
+static const uint8_t SCK  = 13;
+
+static const uint8_t A0 = 19;
+static const uint8_t A1 = 20;
+static const uint8_t A2 = 21;
+static const uint8_t A3 = 22;
 
 #ifdef ARDUINO_MAIN
 const uint32_t port_to_base[] = {
@@ -63,181 +77,116 @@ const uint32_t port_to_base[] = {
 };
 
 const uint16_t digital_pin_to_pin_num[] = {
-	NOT_A_PIN,	/*  dummy */
-	NOT_A_PIN,	/*  1  - 3.3V */
-	PIN_58,		/*  2  - GPIO_03 */
-	PIN_04,		/*  3  - GPIO_13 */
-	PIN_03,		/*  4  - GPIO_12 */
-	PIN_61,		/*  5  - GPIO_06 */
-	PIN_59,		/*  6  - GPIO_04 */
-	PIN_05,		/*  7  - GPIO_14 */
-	PIN_62,		/*  8  - GPIO_07 */
-	PIN_01,		/*  9  - GPIO_10 */
-	PIN_02,		/*  10 - GPIO_11 */
-	PIN_15,		/*  11 - GPIO_22 */
-	PIN_55,		/*  12 - GPIO_01 */
-	PIN_21,		/*  13 - GPIO_25 */
-	PIN_06,		/*  14 - GPIO_15 */
-	PIN_07,		/*  15 - GPIO_16 */
-	NOT_A_PIN,	/*  16 - RESET */
-	PIN_45,		/*  17 - GPIO_31 */
-	PIN_08,		/*  18 - GPIO_17 */
-	PIN_18,		/*  19 - GPIO_28 */
-	NOT_A_PIN,	/*  20 - GND */
-	NOT_A_PIN,	/*  21 - 5V */
-	NOT_A_PIN,	/*  22 - GND */
-	PIN_57,		/*  23 - GPIO_02 */
-	PIN_60,		/*  24 - GPIO_05 */
-	PIN_58,		/*  25 - GPIO_03 */
-	PIN_59,		/*  26 - GPIO_04 */
-	PIN_63,		/*  27 - GPIO_08 */
-	PIN_53,		/*  28 - GPIO_30 */
-	PIN_64,		/*  29 - GPIO_09 */
-	PIN_50,		/*  30 - GPIO_00 */
-	PIN_17,		/*  31 - GPIO_24 */
-	PIN_16,		/*  32 - GPIO_23 */
-	PIN_60,		/*  33 - GPIO_05 */
-	PIN_62,		/*  34 - GPIO_07 */
-	PIN_18,		/*  35 - GPIO_28 */
-	PIN_21,		/*  36 - GPIO_25 */
-	PIN_64,		/*  37 - GPIO_09 */
-	PIN_17,		/*  38 - GPIO_24 */
-	PIN_01,		/*  39 - GPIO_10 */
-	PIN_02		/*  40 - GPIO_11 */
+    PIN_57,         // D0 - IO2 !
+    PIN_55,         // D1 - IO1 !
+    PIN_61,         // D2 - IO6 !
+    PIN_62,         // D3 - IO7 !
+    PIN_50,         // D4 - IO0 !
+    PIN_64,         // D5 - IO9 !
+    PIN_17,         // D6 - IO24 !
+    PIN_18,         // D7 - IO28 !
+    PIN_20,         // D8 - IO29 !
+    PIN_16,         // D9 - IO23 !
+    PIN_15,         // D10 - IO22 !
+	PIN_07,         // D11 - IO16 !
+	PIN_06,         // D12 - IO15 !
+	PIN_05,         // D13 - IO14 !
+    PIN_04,         // D14 - IO13 !
+    PIN_08,         // D15 - IO17 !
+    PIN_53,         // D16 - IO30 !
+    PIN_02,         // D17 - IO11 !
+    PIN_01,         // D18 - IO10 !
+    PIN_57,         // D19 /A0 - IO02 !
+	PIN_58,         // D20 /A1 - IO03 !
+	PIN_59,         // D21 /A2 - IO04 !
+    PIN_60,         // D22 /A3 - IO05 !    
+    PIN_63,         // D23 - IO8 !
+    PIN_03,         // D24 - IO12 !
 };
 
-/* from SWRU367A Table 5-14. GPIO Mapping */ 
 const uint8_t digital_pin_to_port[] = {
-	NOT_A_PIN,	/*  dummy */
-	NOT_A_PIN,	/*  1  - 3.3V */
-	S0,		/*  2  - GPIO_03 */
-	S1,		/*  3  - GPIO_13 */
-	S1,		/*  4  - GPIO_12 */
-	S0,		/*  5  - GPIO_06 */
-	S0,		/*  6  - GPIO_04 */
-	S1,		/*  7  - GPIO_14 */
-	S0,		/*  8  - GPIO_07 */
-	S1,		/*  9  - GPIO_10 */
-	S1,		/*  10 - GPIO_11 */
-	S2,		/*  11 - GPIO_22 */
-	S0,		/*  12 - GPIO_01 */
-	S3,		/*  13 - GPIO_25 */
-	S1,		/*  14 - GPIO_15 */
-	S2,		/*  15 - GPIO_16 */
-	NOT_A_PIN,	/*  16 - RESET */
-	S3,		/*  17 - GPIO_31 */
-	S2,		/*  18 - GPIO_17 */
-	S3,		/*  19 - GPIO_28 */
-	NOT_A_PIN,	/*  20 - GND */
-	NOT_A_PIN,	/*  21 - 5V */
-	NOT_A_PIN,	/*  22 - GND */
-	S0,		/*  23 - GPIO_02 */
-	S0,		/*  24 - GPIO_05 */
-	S0,		/*  25 - GPIO_03 */
-	S0,		/*  26 - GPIO_04 */
-	S1,		/*  27 - GPIO_08 */
-	S3,		/*  28 - GPIO_30 */
-	S1,		/*  29 - GPIO_09 */
-	S0,		/*  30 - GPIO_00 */
-	S3,		/*  31 - GPIO_24 */
-	S2,		/*  32 - GPIO_23 */
-	S0,		/*  33 - GPIO_05 */
-	S0,		/*  34 - GPIO_07 */
-	S3,		/*  35 - GPIO_28 */
-	S3,		/*  36 - GPIO_25 */
-	S1,		/*  37 - GPIO_09 */
-	S3,		/*  38 - GPIO_24 */
-	S1,		/*  39 - GPIO_10 */
-	S1		/*  40 - GPIO_11 */
+    S0,         // D0 - IO2
+    S0,         // D1 - IO1
+    S0,         // D2 - IO6
+    S0,         // D3 - IO7
+    S0,         // D4 - IO0    
+    S1,         // D5 - IO9
+    S3,         // D6 - IO24
+    S3,         // D7 - IO28
+    S3,         // D8 - IO29
+    S2,         // D9 - IO23
+    S2,         // D10 - IO22
+    S2,         // D11 - IO16
+    S1,         // D12 - IO15
+    S1,         // D13 - IO14 
+    S1,         // D14 - IO13
+    S2,         // D15 - IO17
+    S3,         // D16 - IO30 
+    S1,         // D17 - IO11
+    S1,         // D18 - IO10
+    S0,         // D19/A0 - IO02
+    S0,         // D20/A1 - IO03 
+    S0,         // D21/A2 - IO05
+    S0,         // D22/A3 - IO04
+    S1,         // D23 - IO8    
+    S1,         // D24 - IO12     
 };
 
-/* from SWRU367A Table 5-14. GPIO Mapping */ 
 const uint8_t digital_pin_to_bit_mask[] = {
-	NOT_A_PIN,	/*  dummy */
-	NOT_A_PIN,	/*  1  - 3.3V */
-	BV(3),		/*  2  - GPIO_03 */
-	BV(5),		/*  3  - GPIO_13 */
-	BV(4),		/*  4  - GPIO_12 */
-	BV(6),		/*  5  - GPIO_06 */
-	BV(4),		/*  6  - GPIO_04 */
-	BV(6),		/*  7  - GPIO_14 */
-	BV(7),		/*  8  - GPIO_07 */
-	BV(2),		/*  9  - GPIO_10 */
-	BV(3),		/*  10 - GPIO_11 */
-	BV(6),		/*  11 - GPIO_22 */
-	BV(1),		/*  12 - GPIO_01 */
-	BV(1),		/*  13 - GPIO_25 */
-	BV(7),		/*  14 - GPIO_15 */
-	BV(0),		/*  15 - GPIO_16 */
-	NOT_A_PIN,	/*  16 - RESET */
-	BV(7),		/*  17 - GPIO_31 */
-	BV(1),		/*  18 - GPIO_17 */
-	BV(4),		/*  19 - GPIO_28 */
-	NOT_A_PIN,	/*  20 - GND */
-	NOT_A_PIN,	/*  21 - 5V */
-	NOT_A_PIN,	/*  22 - GND */
-	BV(2),		/*  23 - GPIO_02 */
-	BV(5),		/*  24 - GPIO_05 */
-	BV(3),		/*  25 - GPIO_03 */
-	BV(4),		/*  26 - GPIO_04 */
-	BV(0),		/*  27 - GPIO_08 */
-	BV(6),		/*  28 - GPIO_30 */
-	BV(1),		/*  29 - GPIO_09 */
-	BV(0),		/*  30 - GPIO_00 */
-	BV(0),		/*  31 - GPIO_24 */
-	BV(7),		/*  32 - GPIO_23 */
-	BV(5),		/*  33 - GPIO_05 */
-	BV(7),		/*  34 - GPIO_07 */
-	BV(4),		/*  35 - GPIO_28 */
-	BV(1),		/*  36 - GPIO_25 */
-	BV(1),		/*  37 - GPIO_09 */
-	BV(0),		/*  38 - GPIO_24 */
-	BV(2),		/*  39 - GPIO_10 */
-	BV(3)		/*  40 - GPIO_11 */
+    BV(2),         // D0 - IO2
+    BV(1),         // D1 - IO1
+    BV(6),         // D2 - IO6
+    BV(7),         // D3 - IO7
+    BV(0),         // D4 - IO0   
+    BV(1),         // D5 - IO9
+    BV(0),         // D6 - IO24
+    BV(4),         // D7 - IO28
+    BV(5),         // D8 - IO29
+    BV(7),         // D9 - IO23
+    BV(6),         // D10 - IO22
+    BV(0),         // D11 - IO16
+    BV(7),         // D12 - IO15
+    BV(6),         // D13 - IO14
+    BV(5),         // D14 - IO13   
+    BV(1),         // D15 - IO17
+    BV(6),         // D16 - IO30
+    BV(3),         // D17 - IO11
+    BV(2),         // D18 - IO10
+    BV(2),         // D19/A0 - IO02
+    BV(3),         // D20/A3 - IO03 
+    BV(5),         // D21/A1 - IO05
+    BV(4),         // D22/A2 - IO04
+    BV(0),         // D23 - IO8       
+    BV(4),         // D24 - IO12
 };
 
 const uint8_t digital_pin_to_timer[] = {
-	NOT_ON_TIMER,	/*  dummy */
-	NOT_ON_TIMER,	/*  1  - 3.3V */
-	NOT_ON_TIMER,	/*  2  - GPIO_03 */
-	NOT_ON_TIMER,	/*  3  - GPIO_13 */
-	NOT_ON_TIMER,	/*  4  - GPIO_12 */
-	NOT_ON_TIMER,	/*  5  - GPIO_06 */
-	NOT_ON_TIMER,	/*  6  - GPIO_04 */
-	NOT_ON_TIMER,	/*  7  - GPIO_14 */
-	NOT_ON_TIMER,	/*  8  - GPIO_07 */
-	TIMERA3A,	/*  9  - GPIO_10 */
-	TIMERA3B,	/*  10 - GPIO_11 */
-	NOT_ON_TIMER,	/*  11 - GPIO_22 */
-	NOT_ON_TIMER,	/*  12 - GPIO_01 */
-	TIMERA1A,	/*  13 - GPIO_25 */
-	NOT_ON_TIMER,	/*  14 - GPIO_15 */
-	NOT_ON_TIMER,	/*  15 - GPIO_16 */
-	NOT_ON_TIMER,	/*  16 - RESET */
-	NOT_ON_TIMER,	/*  17 - GPIO_31 */
-	NOT_ON_TIMER,	/*  18 - GPIO_17 */
-	NOT_ON_TIMER,	/*  19 - GPIO_28 */
-	NOT_ON_TIMER,	/*  20 - GND */
-	NOT_ON_TIMER,	/*  21 - 5V */
-	NOT_ON_TIMER,	/*  22 - GND */
-	NOT_ON_TIMER,	/*  23 - GPIO_02 */
-	NOT_ON_TIMER,	/*  24 - GPIO_05 */
-	NOT_ON_TIMER,	/*  25 - GPIO_03 */
-	NOT_ON_TIMER,	/*  26 - GPIO_04 */
-	NOT_ON_TIMER,	/*  27 - GPIO_08 */
-	NOT_ON_TIMER,	/*  28 - GPIO_30 */
-	TIMERA2B,	/*  29 - GPIO_09 */
-	NOT_ON_TIMER,	/*  30 - GPIO_00 */
-	TIMERA0A,	/*  31 - GPIO_24 */
-	NOT_ON_TIMER,	/*  32 - GPIO_23 */
-	NOT_ON_TIMER,	/*  33 - GPIO_05 */
-	NOT_ON_TIMER,	/*  34 - GPIO_07 */
-	NOT_ON_TIMER,	/*  35 - GPIO_28 */
-	TIMERA1A,	/*  36 - GPIO_25 */
-	TIMERA2B,	/*  37 - GPIO_09 */
-	TIMERA0A,	/*  38 - GPIO_24 */
-	TIMERA3A,	/*  39 - GPIO_10 */
-	TIMERA3B	/*  40 - GPIO_11 */
+    NOT_ON_TIMER,         // D0 - IO2
+    NOT_ON_TIMER,         // D1 - IO1
+    NOT_ON_TIMER,         // D2 - IO6
+    NOT_ON_TIMER,         // D3 - IO7
+    NOT_ON_TIMER,         // D4 - IO0    
+    TIMERA2B,         // D5 - IO9
+    TIMERA0A,         // D6 - IO24
+    NOT_ON_TIMER,         // D7 - IO28
+    NOT_ON_TIMER,         // D8 - IO29
+    NOT_ON_TIMER,         // D9 - IO23
+    NOT_ON_TIMER,         // D10 - IO22
+    NOT_ON_TIMER,         // D11 - IO16
+    NOT_ON_TIMER,         // D12 - IO15
+    NOT_ON_TIMER,         // D13 - IO14 
+    NOT_ON_TIMER,         // D14 - IO13   
+    NOT_ON_TIMER,         // D15 - IO17
+    NOT_ON_TIMER,         // D16 - IO30  
+    TIMERA3B,         // D17 - IO11
+    TIMERA3A,         // D18 - IO10
+    NOT_ON_TIMER,         // D19/A0 - IO02
+    NOT_ON_TIMER,         // D20/A1 - IO03 
+    NOT_ON_TIMER,         // D21/A2 - IO05
+    NOT_ON_TIMER,         // D22/A3 - IO04 
+    NOT_ON_TIMER,         // D23 - IO8
+    NOT_ON_TIMER,         // D24 - IO12
+
 };
 
 #endif
