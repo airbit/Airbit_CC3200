@@ -2,7 +2,7 @@
 #define Energia_h 
 
 #define __CC3200R1M1RGC__
-#define __WITII_CC3200__
+#define __AIRBIT_CC3200__
 
 #include <stdint.h>
 #include <stdbool.h> 

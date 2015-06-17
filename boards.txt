@@ -9,11 +9,11 @@ lpcc3200.ldscript=cc3200.ld
 #lpcc3200.upload.maximum_ram_size=32768
 
 ##############################################################
-witii_cc3200.name=Witii CC3200 (80MHz)
-witii_cc3200.upload.maximum_size=262144
-witii_cc3200.build.mcu=cortex-m4
-witii_cc3200.build.f_cpu=80000000L
-witii_cc3200.build.core=witii_cc3200
-witii_cc3200.build.variant=witii_cc3200
-witii_cc3200.ldscript=cc3200.ld
-#witii_cc3200.upload.maximum_ram_size=32768
+airbit_cc3200.name=Airbit WiFi w/ cc3200 (80MHz)
+airbit_cc3200.upload.maximum_size=262144
+airbit_cc3200.build.mcu=cortex-m4
+airbit_cc3200.build.f_cpu=80000000L
+airbit_cc3200.build.core=airbit_cc3200
+airbit_cc3200.build.variant=airbit_cc3200
+airbit_cc3200.ldscript=cc3200.ld
+#airbit_cc3200.upload.maximum_ram_size=32768
