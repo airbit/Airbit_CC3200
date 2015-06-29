@@ -47,8 +47,14 @@ private:
 
     bool beginPeriod(ISR newISR, void *params, uint32_t period);
 public:
-    IntervalTimer() { _status = TIMER_OFF; _priority = 1; }
-    ~IntervalTimer() { end(); }
+    IntervalTimer() { 
+        _status = TIMER_OFF; 
+        _priority = 1; 
+        Used[0] = true; // Timer0 is used by tone default
+    }
+    ~IntervalTimer() { 
+        end(); 
+    }
 
     bool begin(ISR newISR, unsigned int newPeriod) {
         return begin(newISR, NULL, newPeriod);

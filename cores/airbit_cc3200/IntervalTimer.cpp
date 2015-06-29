@@ -127,7 +127,7 @@ void IntervalTimer::_disable() {
 // ------------------------------------------------------------
 bool IntervalTimer::_allocate(uint32_t newValue) {
     // check for an available PIT, and if so, start it
-    for (uint8_t id = 0; id < NUM_PIT; id++) {
+    for (uint8_t id = 0; id < NUM_PIT; id++) { // Timer0 is used by tone default
         if (!Used[id]) {
             _id = id;
             _start(newValue);
